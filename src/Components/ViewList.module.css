@@ -1,0 +1,31 @@
+table{
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 1.2rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+thead tr {
+    background-color: dodgerblue;
+    color: white;
+    text-align: left;
+}
+
+th,
+td{
+    padding: 12px 15px;
+}
+
+tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+tr:nth-of-type(even){
+    background-color: #f3f3f3;
+}
+
+tr:last-of-type{
+    border-bottom: 2px solid dodgerblue;
+}
