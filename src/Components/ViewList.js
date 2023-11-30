@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './ViewList.module.css'
 
-export default function ViewList({ list }) {
+export default function ViewList({ list, totalPrice }) {
     return (
         <div>
             <table className={styles.table}>
@@ -26,7 +26,7 @@ export default function ViewList({ list }) {
                     }
                     <tr>
                         <td colSpan="4">Total:</td>
-                        <td>{list.reduce((sum, item) => sum + item.total, 0)}</td>
+                        <td>{totalPrice}</td>
                     </tr>
                 </tbody>
             </table>

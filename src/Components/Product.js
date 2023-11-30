@@ -3,7 +3,7 @@ import Card from './Card'
 import ViewList from './ViewList'
 import Savings from './Savings';
 
-function Product () {
+function Product() {
     const [count, setCount] = useState(0);
     const [discount, setDiscount] = useState(0);
     const [name, setName] = useState('Banana');
@@ -25,7 +25,7 @@ function Product () {
 
     const handlerMinus = () => {
         setCount((prevCount) => {
-            let count = prevCount -1;
+            let count = prevCount - 1;
             if (count < 5) {
                 setDiscount(0);
             }
@@ -58,30 +58,30 @@ function Product () {
         const newList = [...items, newItem];
         setItems(newList);
         setName('');
-        setPrice(0); 
+        setPrice(0);
 
-        setTotalPrice(newList.reduce((sum, item) => sum + item.total, 0));
-        setTotalPriceNoDisc(newList.reduce((sum, item) => sum + item.totalNoDiscount, 0))
-        setSavings(totalPriceNoDisc - totalPrice);
-    }
+        setTotalPriceNoDisc(prevTotalPriceNoDisc => prevTotalPriceNoDisc + newItem.totalNoDiscount);
+        setTotalPrice(prevTotalPrice => prevTotalPrice + newItem.total);
+        const calculatedSavings = totalPriceNoDisc + newItem.totalNoDiscount - totalPrice - newItem.total;
+        setSavings(calculatedSavings);    }
 
     return (
         <>
-            <Card 
-            name={name}
-            count={count}
-            price={price}
-            discount={discount}
+            <Card
+                name={name}
+                count={count}
+                price={price}
+                discount={discount}
 
-            handlerPlus={handlerPlus}
-            handlerMinus={handlerMinus}
-            handlerChangeName={handlerChangeName}
-            handlerChangePrice={handlerChangePrice}
-            handlerAddProduct={handlerAddProduct}
+                handlerPlus={handlerPlus}
+                handlerMinus={handlerMinus}
+                handlerChangeName={handlerChangeName}
+                handlerChangePrice={handlerChangePrice}
+                handlerAddProduct={handlerAddProduct}
             />
 
-            <ViewList list={items}/>
-            <Savings list={items} totalPriceNoDisc={totalPriceNoDisc} savings={savings}/>
+            <ViewList list={items} totalPrice={totalPrice} />
+            <Savings list={items} totalPriceNoDisc={totalPriceNoDisc} savings={savings} />
         </>
     )
 }
