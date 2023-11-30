@@ -50,6 +50,7 @@ function Product () {
             quantity: count,
             discount: discount,
             total: (price * count) - discountedAmount,
+            totalNoDiscount: price * count
         };
         const newList = [...items, newItem];
         setItems(newList);
@@ -73,7 +74,7 @@ function Product () {
             />
 
             <ViewList list={items}/>
-            <Savings />
+            <Savings list={items}/>
         </>
     )
 }
