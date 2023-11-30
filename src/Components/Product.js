@@ -9,6 +9,9 @@ function Product () {
     const [name, setName] = useState('Banana');
     const [price, setPrice] = useState(1.25);
     const [items, setItems] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [totalPriceNoDisc, setTotalPriceNoDisc] = useState(0);
+    const [savings, setSavings] = useState(0);
 
     const handlerPlus = () => {
         setCount((prevCount) => {
@@ -55,7 +58,11 @@ function Product () {
         const newList = [...items, newItem];
         setItems(newList);
         setName('');
-        setPrice(0);
+        setPrice(0); 
+
+        setTotalPrice(newList.reduce((sum, item) => sum + item.total, 0));
+        setTotalPriceNoDisc(newList.reduce((sum, item) => sum + item.totalNoDiscount, 0))
+        setSavings(totalPriceNoDisc - totalPrice);
     }
 
     return (
@@ -74,7 +81,7 @@ function Product () {
             />
 
             <ViewList list={items}/>
-            <Savings list={items}/>
+            <Savings list={items} totalPriceNoDisc={totalPriceNoDisc} savings={savings}/>
         </>
     )
 }
