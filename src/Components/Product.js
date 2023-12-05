@@ -2,6 +2,8 @@ import { useState } from 'react'
 import Card from './Card'
 import ViewList from './ViewList'
 import Savings from './Savings';
+import { CardProvider } from "../Context/CardContext";
+
 
 function Product() {
     const [count, setCount] = useState(0);
@@ -63,25 +65,28 @@ function Product() {
         setTotalPriceNoDisc(prevTotalPriceNoDisc => prevTotalPriceNoDisc + newItem.totalNoDiscount);
         setTotalPrice(prevTotalPrice => prevTotalPrice + newItem.total);
         const calculatedSavings = totalPriceNoDisc + newItem.totalNoDiscount - totalPrice - newItem.total;
-        setSavings(calculatedSavings);    }
+        setSavings((calculatedSavings).toFixed(2));
+    }
+
+    const ctx = {
+        name,
+        count,
+        price,
+        discount,
+        handlerPlus,
+        handlerMinus,
+        handlerChangeName,
+        handlerChangePrice,
+        handlerAddProduct,
+    };
 
     return (
         <>
-            <Card
-                name={name}
-                count={count}
-                price={price}
-                discount={discount}
-
-                handlerPlus={handlerPlus}
-                handlerMinus={handlerMinus}
-                handlerChangeName={handlerChangeName}
-                handlerChangePrice={handlerChangePrice}
-                handlerAddProduct={handlerAddProduct}
-            />
-
-            <ViewList list={items} totalPrice={totalPrice} />
-            <Savings list={items} totalPriceNoDisc={totalPriceNoDisc} savings={savings} />
+            <CardProvider value={ctx}>
+                <Card />
+                <ViewList list={items} totalPrice={totalPrice} />
+                <Savings list={items} totalPriceNoDisc={totalPriceNoDisc} savings={savings} />
+            </CardProvider >
         </>
     )
 }
