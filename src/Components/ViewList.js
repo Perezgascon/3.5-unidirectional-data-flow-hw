@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './ViewList.module.css'
 
-export default function ViewList({ list, totalPrice }) {
+export default function ViewList({ list, totalPrice, handlerDeleteProduct }) {
     return (
         <div>
             <table className={styles.table}>
@@ -11,6 +11,8 @@ export default function ViewList({ list, totalPrice }) {
                     <th>Quantity</th>
                     <th>Discount</th>
                     <th>Total</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </thead>
                 <tbody>
                     {
@@ -20,10 +22,12 @@ export default function ViewList({ list, totalPrice }) {
                                 <td>{item.price}</td>
                                 <td>{item.quantity}</td>
                                 <td>{item.discount}%</td>
-                                <td>{item.total}</td>
+                                <td>{item.total.toFixed(2)}</td>
+                                <td>✍️</td>
+                                <td onClick={() => handlerDeleteProduct(item.id)}>❌</td>
                             </tr>
                         ))
-                    }
+                    }   
                     <tr>
                         <td colSpan="4">Total:</td>
                         <td>{totalPrice}</td>

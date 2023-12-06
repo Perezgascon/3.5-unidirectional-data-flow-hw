@@ -35,8 +35,9 @@ export default function Card() {
         <div className={styles.price}><p>${ctx.price} each</p></div>
         <div className={styles.discount}>{`Discount: ${ctx.discount}%`}</div>
         <div className={styles.form}>
-          <Input value={ctx.name} label='Product Name' onChange={ctx.handlerChangeName} />
-          <Input value={ctx.price} label='Price' onChange={ctx.handlerChangePrice} />
+
+          <Input type="text" id="product-name" name="product-name" value={ctx.name} label="Product Name" onChange={(e) => handleInputChange("name", e.target.value)} />
+          <Input type="number" id="price" name="price" value={ctx.price} label="Price" onChange={(e) => handleInputChange("price", e.target.value)} />
         </div>
         <div>
           <Button label="Add Product" onClick={ctx.handlerAddProduct} />

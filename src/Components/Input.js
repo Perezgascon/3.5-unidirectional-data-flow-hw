@@ -1,18 +1,19 @@
 import React from 'react'
 
-export default function Input({ value, label, onChange }) {
+export default function Input({ value, label, onChange, type }) {
 
-    const handlerChange = (event) => {
-        onChange(event.target.value);
-    }
+
 
     return (
         <div>
             <label>{label}</label>
             <input
-                onChange={handlerChange}
+
+                type={type}
+
                 value={value}
 
+                onChange={onChange}
             />
         </div>
     )
