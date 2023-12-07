@@ -4,6 +4,8 @@ import ViewList from './ViewList'
 import Savings from './Savings';
 import { CardProvider } from "../Context/CardContext";
 import { v4 as uuid } from 'uuid';
+import styles from './Product.module.css'
+import Button from './Button';
 
 
 
@@ -16,7 +18,17 @@ function Product() {
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalPriceNoDisc, setTotalPriceNoDisc] = useState(0);
     const [savings, setSavings] = useState(0);
-    const [list, setList] = useState([]);
+    const [isEditing, setIsEditing] = useState(false);
+
+    const blankForm = {
+        index: 0,
+        name: '',
+        quantity: 0,
+        price: 0,
+        discount: 0
+    }
+
+    const [form, setForm] = useState(blankForm);
 
     const handlerPlus = () => {
         setCount((prevCount) => {
@@ -50,15 +62,13 @@ function Product() {
 
     const handlerAddProduct = () => {
 
-        const discountedAmount = (price * count) * (discount / 100)
-
         const newItem = {
             id: uuid(),
             name: name,
             price: price,
             quantity: count,
             discount: discount,
-            total: (price * count) - discountedAmount,
+            total: price * count * (100 - discount) / 100,
             totalNoDiscount: price * count
         };
         const newList = [...items, newItem];
@@ -74,17 +84,63 @@ function Product() {
     }
 
     const handlerDeleteProduct = (id) => {
-        // create a new item list with everything except the item with matching ID
-        const newList = list.filter(item => item.id!== id);
-        setList(newList);
-    
-        // update new total
-        // let newTotal = 0;
-        // newList.forEach(item => {
-        //   newTotal += item.quantity * item.price * (100 - item.discount) / 100;
-        // });
-        // setSumTotal(newTotal);
-      }
+        const newItems = items.filter(item => item.id !== id);
+        setItems(newItems);
+
+        let newTotal = 0;
+        newItems.forEach(item => {
+            newTotal += item.quantity * item.price * (100 - item.discount) / 100;
+        });
+        setTotalPrice(newTotal);
+
+        let newTotalPriceNoDisc = 0;
+        newItems.forEach(item => {
+            newTotalPriceNoDisc += item.quantity * item.price;
+        });
+        setTotalPriceNoDisc(newTotalPriceNoDisc);
+
+    }
+
+    const handlerSubmitForm = (event) => {
+        event.preventDefault();
+
+        const newItem = { ...items[form.index] };
+        newItem.name = form.name;
+        newItem.quantity = form.quantity;
+        newItem.price = form.price;
+        newItem.discount = form.discount;
+        newItem.total = form.quantity * form.price * (100 - form.discount) / 100
+
+        const newList = [...items];
+        newList[form.index] = newItem;
+        setItems(newList);
+
+        const newTotalPrice = totalPrice - items[form.index].total + newItem.total;
+        setTotalPrice(newTotalPrice);
+
+        setIsEditing(false);
+    }
+
+    const handlerEditForm = (id) => {
+        const i = items.findIndex((item) => item.id === id)
+        const editValues = {
+            index: i,
+            name: items[i].name,
+            quantity: items[i].quantity,
+            price: items[i].price,
+            discount: items[i].discount,
+        }
+
+
+        setForm(editValues);
+        setIsEditing(true);
+    }
+
+    const handlerUpdateForm = (event, key) => {
+        const value = event.target.value;
+        const updatedForm = { ...form, [key]: value };
+        setForm(updatedForm);
+    }
 
     const ctx = {
         name,
@@ -102,9 +158,53 @@ function Product() {
         <>
             <CardProvider value={ctx}>
                 <Card />
-                <ViewList list={items} totalPrice={totalPrice} handlerDeleteProduct={handlerDeleteProduct}/>
-                <Savings list={items} totalPriceNoDisc={totalPriceNoDisc} savings={savings} />
             </CardProvider >
+            <ViewList
+                list={items}
+                totalPrice={totalPrice}
+                handlerDeleteItem={handlerDeleteProduct}
+                handlerEditItem={handlerEditForm} />
+            <Savings
+                list={items}
+                totalPriceNoDisc={totalPriceNoDisc}
+                savings={savings} />
+            {isEditing &&
+                <form className={styles.form} onSubmit={handlerSubmitForm}>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Disc %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input value={form.name} type='text'
+                                        onChange={(e) => handlerUpdateForm(e, 'name')} />
+                                </td>
+                                <td>
+                                    <input value={form.quantity} type='number' min={1}
+                                        onChange={(e) => handlerUpdateForm(e, 'quantity')} />
+                                </td>
+                                <td>
+                                    <input value={form.price} type='number' min={0} step={0.01}
+                                        onChange={(e) => handlerUpdateForm(e, 'price')} />
+                                </td>
+                                <td>
+                                    <input value={form.discount} type='number' min={0}
+                                        onChange={(e) => handlerUpdateForm(e, 'discount')} />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type='submit' />
+                    <Button label='Cancel' onClick={() => setIsEditing(false)} />
+                </form>
+            }
+
         </>
     )
 }

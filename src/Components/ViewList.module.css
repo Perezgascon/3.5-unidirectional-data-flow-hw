@@ -29,3 +29,7 @@ tr:nth-of-type(even){
 tr:last-of-type{
     border-bottom: 2px solid dodgerblue;
 }
+
+.deleteEditIcon {
+    cursor: pointer;
+}
